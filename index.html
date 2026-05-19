@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HSC Year 12 Study Timetable</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css">
+
+<style>
+  :root {
+    --cream: #F7F4EE;
+    --paper: #FFFDF8;
+    --ink: #1A1814;
+    --ink-2: #3D3A34;
+    --ink-3: #7A7570;
+    --ink-4: #B0ABA4;
+    --border: #E4E0D8;
+    --border-light: #EDE9E1;
+    --accent: #C4501A;
+    --accent-soft: #F5EBE5;
+
+    --ext-bg: #EEEDFE; --ext-fg: #3C3489;
+    --eng-bg: #FAECE7; --eng-fg: #712B13;
+    --eco-bg: #EAF3DE; --eco-fg: #27500A;
+    --chem-bg: #E6F1FB; --chem-fg: #0C447C;
+    --phys-bg: #FAEEDA; --phys-fg: #633806;
+    --math-bg: #FBEAF0; --math-fg: #72243E;
+    --free-bg: #F1EFE8; --free-fg: #444441;
+    --commute-bg: #E1F5EE; --commute-fg: #085041;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { font-size: 16px; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    min-height: 100vh;
+    line-height: 1.5;
+  }
+
+  /* ── HEADER ── */
+  .site-header {
+    background: var(--paper);
+    border-bottom: 1.5px solid var(--border);
+    padding: 2.5rem 1.5rem 2rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .site-header::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--ext-fg), var(--eng-fg), var(--eco-fg), var(--chem-fg), var(--phys-fg), var(--math-fg));
+  }
+
+  .header-eyebrow {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: .5rem;
+  }
+
+  .site-header h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(1.75rem, 5vw, 2.75rem);
+    color: var(--ink);
+    line-height: 1.15;
+    letter-spacing: -.01em;
+  }
+
+  .site-header h1 em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .header-sub {
+    margin-top: .65rem;
+    font-size: 13px;
+    color: var(--ink-3);
+    font-weight: 300;
+  }
+
+  /* ── LAYOUT ── */
+  .container {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 1.5rem 1rem 4rem;
+  }
+
+  /* ── TABS ── */
+  .tabs {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  .tab {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 6px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: 100px;
+    cursor: pointer;
+    color: var(--ink-3);
+    background: var(--paper);
+    transition: all .18s ease;
+    letter-spacing: .01em;
+  }
+
+  .tab:hover { border-color: var(--ink-4); color: var(--ink-2); }
+
+  .tab.active {
+    background: var(--ink);
+    color: var(--paper);
+    border-color: var(--ink);
+  }
+
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  /* ── SECTION TITLE ── */
+  .section-title {
+    font-size: 10.5px;
+    font-weight: 600;
+    color: var(--ink-3);
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    margin: 1.75rem 0 .75rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* ── ALERT BOXES ── */
+  .warn-box, .success-box {
+    border-radius: 10px;
+    padding: .85rem 1rem;
+    font-size: 13px;
+    line-height: 1.6;
+    margin-bottom: 1rem;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+
+  .warn-box {
+    background: #FFF7ED;
+    border: 1.5px solid #FDC98A;
+    color: #7C4A0E;
+  }
+
+  .success-box {
+    background: #F0FBF4;
+    border: 1.5px solid #86EFAC;
+    color: #166534;
+  }
+
+  .warn-box::before { content: '⚠'; flex-shrink: 0; }
+  .success-box::before { content: '✓'; flex-shrink: 0; font-weight: 700; }
+
+  /* ── DAY CARDS ── */
+  .day-card {
+    background: var(--paper);
+    border: 1.5px solid var(--border);
+    border-radius: 14px;
+    margin-bottom: 10px;
+    overflow: hidden;
+    transition: box-shadow .18s;
+  }
+
+  .day-card:hover { box-shadow: 0 2px 12px rgba(26,24,20,.06); }
+
+  .day-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: .85rem 1.1rem;
+    cursor: pointer;
+    user-select: none;
+    border-bottom: 1.5px solid transparent;
+    transition: background .15s;
+  }
+
+  .day-header:hover { background: var(--cream); }
+  .day-header.open { border-bottom-color: var(--border-light); }
+
+  .day-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    flex-shrink: 0;
+    opacity: .5;
+  }
+
+  .day-label {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--ink);
+    flex: 1;
+    font-family: 'DM Serif Display', serif;
+    letter-spacing: .01em;
+  }
+
+  .day-meta {
+    font-size: 11.5px;
+    color: var(--ink-3);
+    font-weight: 300;
+  }
+
+  .chevron {
+    font-size: 16px;
+    color: var(--ink-4);
+    transition: transform .22s cubic-bezier(.4,0,.2,1);
+    flex-shrink: 0;
+  }
+
+  .chevron.open { transform: rotate(180deg); }
+
+  .day-body {
+    padding: 1rem 1.1rem;
+    display: none;
+  }
+
+  .day-body.open { display: block; }
+
+  /* ── BLOCKS ── */
+  .block {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 12px;
+    align-items: flex-start;
+  }
+
+  .block:last-child { margin-bottom: 0; }
+
+  .time-col {
+    font-size: 11.5px;
+    color: var(--ink-4);
+    min-width: 95px;
+    padding-top: 3px;
+    flex-shrink: 0;
+    font-weight: 400;
+  }
+
+  .block-content { flex: 1; }
+
+  .block-title {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 4px;
+    line-height: 1.3;
+  }
+
+  .block-desc {
+    font-size: 13px;
+    color: var(--ink-3);
+    line-height: 1.6;
+    font-weight: 300;
+  }
+
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border-light);
+    margin: 10px 0;
+  }
+
+  /* ── TAGS ── */
+  .tag {
+    display: inline-block;
+    font-size: 10.5px;
+    padding: 2px 7px;
+    border-radius: 5px;
+    margin-right: 3px;
+    margin-bottom: 3px;
+    font-weight: 600;
+    letter-spacing: .02em;
+    vertical-align: middle;
+  }
+
+  .tag-ext      { background: var(--ext-bg);     color: var(--ext-fg); }
+  .tag-eng      { background: var(--eng-bg);     color: var(--eng-fg); }
+  .tag-eco      { background: var(--eco-bg);     color: var(--eco-fg); }
+  .tag-chem     { background: var(--chem-bg);    color: var(--chem-fg); }
+  .tag-phys     { background: var(--phys-bg);    color: var(--phys-fg); }
+  .tag-math     { background: var(--math-bg);    color: var(--math-fg); }
+  .tag-free     { background: var(--free-bg);    color: var(--free-fg); }
+  .tag-commute  { background: var(--commute-bg); color: var(--commute-fg); }
+
+  /* ── PRIORITY GRID ── */
+  .priority-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  @media (max-width: 480px) {
+    .priority-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  .pcard {
+    padding: .85rem 1rem;
+    background: var(--paper);
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+  }
+
+  .pcard-label {
+    font-size: 10px;
+    color: var(--ink-4);
+    font-weight: 500;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+  }
+
+  .pcard-val {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--ink);
+    font-family: 'DM Serif Display', serif;
+  }
+
+  /* ── METHOD LIST ── */
+  .method-list { list-style: none; }
+
+  .method-list li {
+    font-size: 13px;
+    color: var(--ink-2);
+    padding: 7px 0 7px 18px;
+    border-bottom: 1px solid var(--border-light);
+    line-height: 1.6;
+    position: relative;
+    font-weight: 300;
+  }
+
+  .method-list li:last-child { border-bottom: none; }
+
+  .method-list li::before {
+    content: "→";
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  .method-list li strong {
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  /* ── OPEN BODY STATE (no padding needed for always-open) ── */
+  .day-card .day-body[style*="display:block"],
+  .day-card .day-body[style*="display: block"] {
+    display: block !important;
+  }
+
+  /* ── FOOTER ── */
+  .site-footer {
+    text-align: center;
+    padding: 1.5rem;
+    font-size: 12px;
+    color: var(--ink-4);
+    border-top: 1px solid var(--border);
+    background: var(--paper);
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-eyebrow">Year 12 · 2025</div>
+  <h1>HSC Study <em>Timetable</em></h1>
+  <p class="header-sub">Weekly schedule · Study methods · Extension 1 recovery · Targets</p>
+</header>
+
+<main class="container">
+
+<div class="tabs">
+  <button class="tab active" onclick="switchTab('timetable', this)">Weekly timetable</button>
+  <button class="tab" onclick="switchTab('methods', this)">Study methods</button>
+  <button class="tab" onclick="switchTab('ext1', this)">Extension 1 recovery</button>
+  <button class="tab" onclick="switchTab('targets', this)">Weekly targets</button>
+</div>
+
+<!-- ═══════════════════════════════ TIMETABLE ═══════════════════════════════ -->
+<div id="tab-timetable" class="panel active">
+
+<div class="warn-box">Sleep target: in bed by 10:15pm, lights out 10:45pm. Every late night costs more than an extra study hour gains. Fix this first.</div>
+
+<!-- MONDAY -->
+<div class="day-card">
+  <div class="day-header" onclick="toggle(this)">
+    <span class="day-dot"></span>
+    <span class="day-label">Monday</span>
+    <span class="day-meta">Extension morning · Leave 5:55 · Home ~4:45</span>
+    <i class="ti ti-chevron-down chevron"></i>
+  </div>
+  <div class="day-body">
+    <div class="block"><div class="time-col">5:20 wake</div><div class="block-content"><div class="block-title">Morning commute <span class="tag tag-commute">commute</span></div><div class="block-desc">Extension 1 formula sheet review. Go through vectors notes or a worked example sheet — eyes on the page, not the phone.</div></div></div>
+    <hr class="divider">
+    <div class="block"><div class="time-col">Extension class</div><div class="block-content"><div class="block-title">School — Extension 1 <span class="tag tag-ext">Ext 1</span></div><div class="block-desc">Engage fully. Write down every example. Note which step confuses you — that's the target for tonight.</div></div></div>
+    <hr class="divider">
+    <div class="block"><div class="time-col">Afternoon commute</div><div class="block-content"><div class="block-title">Return commute <span class="tag tag-commute">commute</span></div><div class="block-desc">Review what was covered in Extension class. Write out the confusing step in own words. If it clicks, move on. If not, flag it for tonight.</div></div></div>
+    <hr class="divider">
+    <div class="block"><div class="time-col">5:30 – 6:45</div><div class="block-content"><div class="block-title">Extension 1 <span class="tag tag-ext">Ext 1</span></div><div class="block-desc">Phone in another room. Open on the exact confusion from today's class. 15 min concept repair → 45 min timed questions (no notes) → 15 min mark and log errors in an error notebook.</div></div></div>
+    <hr class="divider">
+    <div class="block"><div class="time-col">7:00 – 8:00</div><div class="block-content"><div class="block-title">English <span class="tag tag-eng">Eng</span></div><div class="block-desc">Rotate each week: Week A = timed unseen short answer (15 min read, 20 min write, 10 min self-mark). Week B = Mod C timed paragraph. Week C = Richard III/Looking for Richard comparative paragraph. Week D = Eliot poem annotation.</div></div></div>
+    <hr class="divider">
+    <div class="block"><div class="time-col">8:00 – 8:30</div><div class="block-content"><div class="block-title">Prep + wind down <span class="tag tag-free">admin</span></div><div class="block-desc">Pack bag, set out tomorrow's resources, review tomorrow's tasks. Screen off after 9pm.</div></div></div>
+    <div class="block"><div class="time-col">10:15</div><div class="block-content"><div class="block-title">In bed</div><div class="block-desc">Non-negotiable on extension mornings.</div></div></div>
+  </div>
+</div>
+
+<!-- TUESDAY -->
+<div class="day-card">
+  <div class="day-header" onclick="toggle(this)">
+    <span class="day-dot"></span>
+    <span class="day-label">Tuesday</span>
+    <span class="day-meta">Finish 12:15 · Home ~2pm · Soccer 6:45–8:35</span>
+    <i class="ti ti-chevron-down chevron"></i>
+  </div>
+  <div class="day-body">
+    <div class="block"><div class="time-col">Morning commute</div><div class="block-content"><div class="block-title">Commute <span class="tag tag-commute">commute</span></div><div class="block-desc">Economics: read one article on a current issue, jot 2–3 policy responses. Or English quote blurting — say quotes and techniques aloud from memory.</div></div></div>
+    <hr class="divider">
+    <div class="success-box">Tuesday early finish = biggest study opportunity of the week. Protect it.</div>
+    <div class="block"><div class="time-col">2:30 – 4:30</div><div class="block-content"><div class="block-title">Deep work block <span class="tag tag-ext">Ext 1</span> or <span class="tag tag-chem">Chem</span> or <span class="tag tag-phys">Phys</span></div><div class="block-desc">Phone in a different room. Alternate each Tuesday: Week 1 = Extension 1 full practice set. Week 2 = Chemistry past paper section. Week 3 = Physics past paper section. No passive revision here — questions only. Mark at the end, log errors.</div></div></div>
+    <hr class="divider">
+    <div class="block"><div class="time-col">4:30 – 5:00</div><div class="block-content"><div class="block-title">Break <span class="tag tag-free">break</span></div><div class="block-desc">Eat. Walk. Not scrolling.</div></div></div>
+    <hr class="divider">
+    <div class="block"><div class="time-col">5:00 – 6:10</div><div class="block-content"><div class="block-title">Economics <span class="tag tag-eco">Eco</span></div><div class="block-desc">Write one timed essay plan (10 min) then write one full timed paragraph (20 min) then check against model answer. Spend remaining time updating the statistics/evidence sheet with new data from recent reading.</div></div></div>
+    <hr class="divider">
+    <div class="block"><div class="time-col">Soccer + commute</div><div class="block-content"><div class="block-title">Soccer training</div><div class="block-desc">Fully switch off from study. Recovery matters.</div></div></div>
+    <div class="block"><div class="time-col">Post-soccer</div><div class="block-content"><div class="block-title">Wind down only</div><div class="block-desc">Shower, light review of tomorrow's plan (5 min max), sleep.</div></div></div>
+  </div>
+</div>
+
+<!-- WEDNESDAY -->
+<div class="day-card">
+  <div class="day-header" onclick="toggle(this)">
+    <span class="day-dot"></span>
+    <span class="day-label">Wednesday</span>
+    <span class="day-meta">Late start · Finish 2:30 · Eng tutoring 6:30–8:30</span>
+    <i class="ti ti-chevron-down chevron"></i>
+  </div>
+  <div class="day-body">
+    <div class="block"><div class="time-col">7:10 – 7:40</div><div class="block-content"><div class="block-title">Morning review <span class="tag tag-commute">home</span></div><div class="block-desc">Quick blurt session: write out as many Economics policies, Chemistry equations, or Physics formulas as possible from memory on a blank page. Check against notes. This is retrieval practice — not reading.</div></div></div>
+    <hr class="divider">
+    <div class="block"><div class="time-col">Afternoon commute</div><div class="block-content"><div class="block-title">Return commute <span class="tag tag-commute">commute</span></div><div class="block-desc">Mark any work from school. Read one Economics or Physics stimulus and jot notes on it.</div></div></div>
+    <hr class="divider">
+    <div class="block"><div class="time-col">4:00 – 5:45</div><div class="block-content"><div class="block-title">Mathematics Advanced <span class="tag tag-math">Math Adv</span></div><div class="block-desc">Timed mixed question sets only. Pull questions from past papers — mix calculus, sequences, probability. After each question, check working carefully before moving on (targets the transcription error habit). 50 min on, 10 min mark and review, repeat.</div></div></div>
+    <hr class="divider">
+    <div class="block"><div class="time-col">5:45 – 6:20</div><div class="block-content"><div class="block-title">Dinner + travel to tutoring</div><div class="block-desc">Bring any unseen texts or Mod C notes to review on commute.</div></div></div>
+    <hr class="divider">
+    <div class="block"><div class="time-col">6:30 – 8:30</div><div class="block-content"><div class="block-title">English tutoring <span class="tag tag-eng">Eng</span></div><div class="block-desc">Actively engage. Write the feedback down immediately after each piece. Bring a list of specific questions about unseen technique identification.</div></div></div>
+    <hr class="divider">
+    <div class="block"><div class="time-col">9:00 – 9:30</div><div class="block-content"><div class="block-title">Tutoring debrief <span class="tag tag-eng">Eng</span></div><div class="block-desc">While it's fresh: rewrite one paragraph using tutor's feedback. Don't leave it until the weekend — the feedback compounds immediately.</div></div></div>
+  </div>
+</div>
+
+<!-- THURSDAY -->
+<div class="day-card">
+  <div class="day-header" onclick="toggle(this)">
+    <span class="day-dot"></span>
+    <span class="day-label">Thursday</span>
+    <span class="day-meta">Extension morning · Leave 5:55 · Free after 1:08 · Soccer eve</span>
+    <i class="ti ti-chevron-down chevron"></i>
+  </div>
+  <div class="day-body">
+    <div class="block"><div class="time-col">5:20 wake</div><div class="block-content"><div class="block-title">Morning commute <span class="tag tag-commute">commute</span></div><div class="block-desc">Extension 1: read two worked examples from a textbook or past paper solution. No active solving — just trace the logic. Primes the brain for Extension class.</div></div></div>
+    <hr class="divider">
+    <div class="block"><div class="time-col">2:30 – 4:30</div><div class="block-content"><div class="block-title">Extension 1 — priority session <span class="tag tag-ext">Ext 1</span></div><div class="block-desc">Most important session of the week. Structure: 20 min concept repair on the weakest area (currently differential equations alongside vectors). 70 min hard questions under timed conditions, no notes. 30 min marking and writing in the error log with reason for each mistake (concept gap / algebra slip / panic / skipped step).</div></div></div>
+    <hr class="divider">
+    <div class="block"><div class="time-col">4:30 – 4:45</div><div class="block-content"><div class="block-title">Break</div></div></div>
+    <hr class="divider">
+    <div class="block"><div class="time-col">4:45 – 5:45</div><div class="block-content"><div class="block-title">Physics or Chemistry rotation <span class="tag tag-phys">Phys</span> <span class="tag tag-chem">Chem</span></div><div class="block-desc">Alternate each Thursday. Physics: past paper extended response questions. Write a full response, then compare to marking criteria word by word — identify where marks were lost. Chemistry: stimulus-based questions. Practice interpreting the stimulus before touching the question. Never over-complicate.</div></div></div>
+    <hr class="divider">
+    <div class="block"><div class="time-col">Soccer + after</div><div class="block-content"><div class="block-title">Soccer then sleep</div><div class="block-desc">Wind down properly. In bed by 10:15 — another extension morning tomorrow is not the case, but two late nights in a row destroys Friday productivity.</div></div></div>
+  </div>
+</div>
+
+<!-- FRIDAY -->
+<div class="day-card">
+  <div class="day-header" onclick="toggle(this)">
+    <span class="day-dot"></span>
+    <span class="day-label">Friday</span>
+    <span class="day-meta">Late start · Finish 3:05 · Home ~4:45 · Recovery day with work</span>
+    <i class="ti ti-chevron-down chevron"></i>
+  </div>
+  <div class="day-body">
+    <div class="block"><div class="time-col">Morning commute</div><div class="block-content"><div class="block-title">Commute <span class="tag tag-commute">commute</span></div><div class="block-desc">Physics formulas and definitions — blurt from memory, check against formula sheet. Or Economics policy evaluation points from memory.</div></div></div>
+    <hr class="divider">
+    <div class="block"><div class="time-col">4:45 – 5:00</div><div class="block-content"><div class="block-title">Decompress <span class="tag tag-free">break</span></div><div class="block-desc">15 minutes only. Then start — starting is the hardest part of every session.</div></div></div>
+    <hr class="divider">
+    <div class="block"><div class="time-col">5:00 – 6:30</div><div class="block-content"><div class="block-title">Economics <span class="tag tag-eco">Eco</span></div><div class="block-desc">One full essay plan from a past paper or predicted topic (10 min timed), then write the full essay (35 min timed), then self-mark against criteria. Remaining time: update the live statistics and evidence bank with any new data from that week.</div></div></div>
+    <hr class="divider">
+    <div class="block"><div class="time-col">6:30 – 7:15</div><div class="block-content"><div class="block-title">English <span class="tag tag-eng">Eng</span></div><div class="block-desc">One timed paragraph — unseen text practice. 5 min reading, 15 min writing, 10 min self-review for technique identification and conciseness. This directly targets the identified weakness.</div></div></div>
+    <hr class="divider">
+    <div class="block"><div class="time-col">7:15 onwards</div><div class="block-content"><div class="block-title">Free <span class="tag tag-free">free</span></div><div class="block-desc">Genuinely free. The week's core work is done.</div></div></div>
+  </div>
+</div>
+
+<!-- SATURDAY -->
+<div class="day-card">
+  <div class="day-header" onclick="toggle(this)">
+    <span class="day-dot"></span>
+    <span class="day-label">Saturday</span>
+    <span class="day-meta">Game day · Flexible around match time</span>
+    <i class="ti ti-chevron-down chevron"></i>
+  </div>
+  <div class="day-body">
+    <div class="block"><div class="time-col">9:00 – 11:00</div><div class="block-content"><div class="block-title">Extension 1 <span class="tag tag-ext">Ext 1</span></div><div class="block-desc">Full past paper section under timed conditions. No stopping. Mark afterwards. Add errors to the log. If game is morning, shift this block to after.</div></div></div>
+    <hr class="divider">
+    <div class="block"><div class="time-col">11:30 – 12:30</div><div class="block-content"><div class="block-title">Chemistry or Physics <span class="tag tag-chem">Chem</span> <span class="tag tag-phys">Phys</span></div><div class="block-desc">Past paper questions. Prioritise working scientifically / stimulus interpretation questions — the report flagged these for both subjects. Write concise, precise responses and compare to marking guidelines.</div></div></div>
+    <hr class="divider">
+    <div class="block"><div class="time-col">Game</div><div class="block-content"><div class="block-title">Soccer <span class="tag tag-free">game</span></div><div class="block-desc">Fully off. No guilt.</div></div></div>
+    <div class="block"><div class="time-col">Post-game</div><div class="block-content"><div class="block-title">Free or light review</div><div class="block-desc">Optional: 30 min Economics flashcard review or English quote recall. Nothing heavy.</div></div></div>
+  </div>
+</div>
+
+<!-- SUNDAY -->
+<div class="day-card">
+  <div class="day-header" onclick="toggle(this)">
+    <span class="day-dot"></span>
+    <span class="day-label">Sunday</span>
+    <span class="day-meta">Eng tutoring 2–4pm · Consolidation day</span>
+    <i class="ti ti-chevron-down chevron"></i>
+  </div>
+  <div class="day-body">
+    <div class="block"><div class="time-col">9:30 – 11:30</div><div class="block-content"><div class="block-title">Weekly consolidation + weak area <span class="tag tag-ext">Ext 1</span> <span class="tag tag-math">Math Adv</span></div><div class="block-desc">First 30 min: review the week's error log across all subjects. Identify the top 3 recurring mistakes — these go on a sticky note visible at the desk. Remaining 90 min: Math Adv or Ext 1 mixed questions targeting those specific errors.</div></div></div>
+    <hr class="divider">
+    <div class="block"><div class="time-col">12:00 – 1:30</div><div class="block-content"><div class="block-title">Physics <span class="tag tag-phys">Phys</span></div><div class="block-desc">Extended response practice. Focus on depth of response — the teacher's feedback says responses need more depth. After writing, count the marking criteria points hit vs missed.</div></div></div>
+    <hr class="divider">
+    <div class="block"><div class="time-col">2:00 – 4:00</div><div class="block-content"><div class="block-title">English tutoring <span class="tag tag-eng">Eng</span></div><div class="block-desc">Bring 2 specific questions and a draft paragraph to get feedback on. Come prepared.</div></div></div>
+    <hr class="divider">
+    <div class="block"><div class="time-col">5:00 – 6:30</div><div class="block-content"><div class="block-title">Economics or Mathematics Advanced <span class="tag tag-eco">Eco</span> <span class="tag tag-math">Math Adv</span></div><div class="block-desc">Alternate. Economics: evaluation practice — write a counter-argument paragraph for a position taken in Friday's essay. Maths Adv: focus on whichever topic had errors this week. No theory reading — questions only.</div></div></div>
+    <hr class="divider">
+    <div class="block"><div class="time-col">7:00 – 7:30</div><div class="block-content"><div class="block-title">Week planning <span class="tag tag-free">admin</span></div><div class="block-desc">Write out the week's sessions. Note upcoming deadlines. Set the Extension 1 topic for Monday's session. This 30 min prevents Sunday night anxiety and Monday drift.</div></div></div>
+  </div>
+</div>
+
+</div><!-- /tab-timetable -->
+
+<!-- ═══════════════════════════════ METHODS ═══════════════════════════════ -->
+<div id="tab-methods" class="panel">
+<div class="section-title">Subject-by-subject study methods</div>
+
+<div class="day-card" style="margin-bottom:12px">
+  <div class="day-header" onclick="toggle(this)"><span class="day-dot"></span><span class="day-label"><span class="tag tag-ext">Ext 1</span> Mathematics Extension 1</span><i class="ti ti-chevron-down chevron"></i></div>
+  <div class="day-body">
+    <ul class="method-list">
+      <li>Touch Ext 1 every single day — even 20 minutes. The avoidance loop is the main problem, not ability.</li>
+      <li>Step 1: identify the exact failure point (not "vectors" — specifically "vector proofs" or "Cartesian conversion"). Open the textbook to that section only.</li>
+      <li>Step 2: trace 2–3 worked examples slowly. Write out every line. Do not skip steps.</li>
+      <li>Step 3: attempt 3–5 questions without notes under timed conditions.</li>
+      <li>Step 4: mark and write in the error log — for each mistake, record whether it was a concept gap, algebra error, or panic skip. Different causes need different fixes.</li>
+      <li>Differential equations: consolidate this topic alongside vectors. These two are the current priority.</li>
+      <li>Do not attempt long passive reading of theory. Questions first, theory only when stuck.</li>
+      <li>Current rank 14/25 → target rank 5–8. Every rank gained here moves the ATAR more than extra marks in already-strong subjects.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="day-card" style="margin-bottom:12px">
+  <div class="day-header" onclick="toggle(this)"><span class="day-dot"></span><span class="day-label"><span class="tag tag-eng">Eng</span> English Advanced</span><i class="ti ti-chevron-down chevron"></i></div>
+  <div class="day-body">
+    <ul class="method-list">
+      <li>Unseen texts: 5 min read → annotate techniques → 15–20 min write response → self-mark for technique coverage and conciseness. Do this at least twice a week.</li>
+      <li>Mod C (Father and Child / Spotty-Handed Villainesses): practice timed paragraphs. Focus on how gender and power is constructed, not just described.</li>
+      <li>Common Module (1984): build a bank of 8–10 flexible ideas about human nature that can pivot to any question angle. Avoid memorising essays — adapt ideas.</li>
+      <li>Module A (Richard III / Looking for Richard): build a comparative table — for each theme, list techniques and examples from both texts side by side. Practice writing comparative topic sentences.</li>
+      <li>Module B (Eliot poems): annotate 2 poems deeply each week — imagery, form, syntax. Practice writing about structure as meaning, not just imagery.</li>
+      <li>After each tutoring session, immediately rewrite one paragraph using the feedback received. Don't leave it 5 days.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="day-card" style="margin-bottom:12px">
+  <div class="day-header" onclick="toggle(this)"><span class="day-dot"></span><span class="day-label"><span class="tag tag-eco">Eco</span> Economics</span><i class="ti ti-chevron-down chevron"></i></div>
+  <div class="day-body">
+    <ul class="method-list">
+      <li>Already at rank 1. The gap between rank 1 and state-level territory is: fresher evidence, sharper evaluation, and question flexibility.</li>
+      <li>Maintain a live statistics sheet — update it weekly with new RBA data, ABS figures, or global indicators. This is the single biggest differentiator in high-scoring responses.</li>
+      <li>Each week: one timed full essay (35 min), one timed paragraph on a different topic (20 min), and one counter-argument or evaluation paragraph on a position already argued.</li>
+      <li>Integrate data inside the paragraph — not as an afterthought. Practice writing "as evidenced by [specific statistic, year, source]" naturally within argument sentences.</li>
+      <li>For policy questions: always cover effectiveness, limitations, and a comparative policy option. Three-lens evaluation is what pushes responses to band 6.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="day-card" style="margin-bottom:12px">
+  <div class="day-header" onclick="toggle(this)"><span class="day-dot"></span><span class="day-label"><span class="tag tag-math">Math</span> Mathematics Advanced</span><i class="ti ti-chevron-down chevron"></i></div>
+  <div class="day-body">
+    <ul class="method-list">
+      <li>The teacher identified transcription and computation errors as the main issue. After each step, pause and check before moving to the next line.</li>
+      <li>Mixed past paper questions only — no topic-by-topic drills. The HSC paper is mixed; train for that format.</li>
+      <li>Work in 50-min blocks. After each block, mark every question. Every error gets a written reason: computation, setup, misread question.</li>
+      <li>Do not rework questions immediately after getting them wrong — close the paper, sleep on it, attempt again cold the next day.</li>
+      <li>Probability and distributions: spend extra time here if errors appear — this is a common late-course weak point.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="day-card" style="margin-bottom:12px">
+  <div class="day-header" onclick="toggle(this)"><span class="day-dot"></span><span class="day-label"><span class="tag tag-chem">Chem</span> Chemistry</span><i class="ti ti-chevron-down chevron"></i></div>
+  <div class="day-body">
+    <ul class="method-list">
+      <li>Teacher feedback: strong understanding, needs better stimulus interpretation. The fix is practice, not more theory.</li>
+      <li>For every stimulus question: read the stimulus twice before reading the question. Identify what concept it is testing. Then answer — don't over-engineer.</li>
+      <li>Acids/bases and equilibrium: write concise definitions from memory, then check accuracy. Precision in language is what separates band 5 and band 6 responses.</li>
+      <li>Past paper working scientifically questions: write full responses then compare wording against marking guidelines. Adopt the exact scientific terminology in the guidelines.</li>
+      <li>Error log: for every chemistry mistake, note whether it was a knowledge gap or a misread stimulus — these need different fixes.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="day-card" style="margin-bottom:12px">
+  <div class="day-header" onclick="toggle(this)"><span class="day-dot"></span><span class="day-label"><span class="tag tag-phys">Phys</span> Physics</span><i class="ti ti-chevron-down chevron"></i></div>
+  <div class="day-body">
+    <ul class="method-list">
+      <li>Teacher feedback: responses need more depth to access full marks. After writing a response, count explicitly how many marking criteria points are covered. If the question is worth 4 marks, there should be 4 distinct scorable points.</li>
+      <li>Circular motion and projectile motion: strong already. Maintain with 2–3 calculation questions per week.</li>
+      <li>Extended response writing: after completing a response, swap "the diagram shows" and vague phrases for precise scientific language. Read the marking guidelines and adopt their exact terminology.</li>
+      <li>Seek feedback on written responses — either from a teacher, from marking guidelines, or from a tutor. The report specifically mentioned this as the improvement path.</li>
+    </ul>
+  </div>
+</div>
+</div><!-- /tab-methods -->
+
+<!-- ═══════════════════════════════ EXT1 ═══════════════════════════════ -->
+<div id="tab-ext1" class="panel">
+
+<div class="warn-box">Extension 1 is the single biggest ATAR lever available. Rank 14/25 with 38% on Assessment Task 1 is recoverable — but only through daily contact and structured practice. Avoidance makes this worse every week.</div>
+
+<div class="section-title">The psychology fix</div>
+<div class="day-card" style="margin-bottom:12px"><div class="day-body" style="display:block">
+<ul class="method-list">
+  <li>The disheartening test result + avoidance loop is the actual problem. The content is learnable.</li>
+  <li>Daily contact rule: Ext 1 is touched every day — even 20 min counts. No exceptions.</li>
+  <li>The 10-minute rule: when avoiding, commit to 10 minutes only. Starting breaks the avoidance. Momentum builds after that.</li>
+  <li>The error log is the most important tool — it converts failure from demoralising into actionable. Every mistake becomes a target, not a verdict.</li>
+</ul>
+</div></div>
+
+<div class="section-title">Current priority topics</div>
+<div class="priority-grid">
+  <div class="pcard"><div class="pcard-label">Priority 1</div><div class="pcard-val">Vectors</div></div>
+  <div class="pcard"><div class="pcard-label">Priority 2</div><div class="pcard-val">Diff. equations</div></div>
+  <div class="pcard"><div class="pcard-label">Priority 3</div><div class="pcard-val">Integration apps</div></div>
+</div>
+
+<div class="section-title">Session structure (every Ext 1 session)</div>
+<div class="day-card"><div class="day-body" style="display:block">
+<ul class="method-list">
+  <li><strong>Step 1 — Concept repair (15–20 min):</strong> Identify the exact sub-topic weakness. Not "vectors" — specifically "vector proofs" or "finding the angle between two vectors." Open textbook to that page only.</li>
+  <li><strong>Step 2 — Worked examples (15 min):</strong> Trace 2–3 examples from solutions. Write every line. Don't skip the setup.</li>
+  <li><strong>Step 3 — Timed questions (40–60 min):</strong> Past paper or textbook questions under time pressure. No notes. Stop when time is up even if incomplete.</li>
+  <li><strong>Step 4 — Error log (15 min):</strong> For every wrong answer, write: (a) which concept failed, (b) where exactly the error appeared, (c) the correct method in own words. Never leave errors unmarked.</li>
+</ul>
+</div></div>
+
+<div class="section-title">Assessment timeline</div>
+<div class="day-card"><div class="day-body" style="display:block">
+<ul class="method-list">
+  <li>Weeks 5–7: daily contact, vectors and differential equations foundation repair, error log started</li>
+  <li>Weeks 8–9: assessment mode — past paper timed sets, simulate exam conditions</li>
+  <li>Holidays: heavy catch-up block, aim for 2 full past papers per week</li>
+  <li>Term 3 Week 1: consolidation assessment, maximise marks</li>
+  <li>Trials Week 4–5: peak readiness — full papers under strict time conditions daily</li>
+</ul>
+</div></div>
+</div><!-- /tab-ext1 -->
+
+<!-- ═══════════════════════════════ TARGETS ═══════════════════════════════ -->
+<div id="tab-targets" class="panel">
+<div class="section-title">Weekly study hour targets (outside school)</div>
+<div class="priority-grid">
+  <div class="pcard"><div class="pcard-label">Extension 1</div><div class="pcard-val">7–8 hrs</div></div>
+  <div class="pcard"><div class="pcard-label">English</div><div class="pcard-val">5 hrs</div></div>
+  <div class="pcard"><div class="pcard-label">Economics</div><div class="pcard-val">4 hrs</div></div>
+  <div class="pcard"><div class="pcard-label">Math Adv</div><div class="pcard-val">4 hrs</div></div>
+  <div class="pcard"><div class="pcard-label">Chemistry</div><div class="pcard-val">3 hrs</div></div>
+  <div class="pcard"><div class="pcard-label">Physics</div><div class="pcard-val">3 hrs</div></div>
+</div>
+<div class="success-box">Total: ~26–28 focused hours per week. Commute time (up to 12 hrs/week) counts toward this — use it properly and the targets are very achievable.</div>
+
+<div class="section-title">Commute study — what goes where</div>
+<div class="day-card"><div class="day-body" style="display:block">
+<ul class="method-list">
+  <li>Morning (lower cognitive load): Economics flashcards, English quote recall, Physics formula blurting, Chem definitions from memory</li>
+  <li>Afternoon (medium load): marking answers, reviewing errors, reading exemplar Economics responses, Extension 1 worked example tracing</li>
+  <li>Not on commute: new problem-solving, writing extended responses, anything requiring full concentration</li>
+</ul>
+</div></div>
+
+<div class="section-title">Anti-procrastination rules</div>
+<div class="day-card"><div class="day-body" style="display:block">
+<ul class="method-list">
+  <li>Phone goes in a different room during every study block. Not face-down on the desk — different room.</li>
+  <li>Study in 50-min blocks with a 10-min break. Not 3-hour unfocused sessions.</li>
+  <li>When avoiding: commit to 10 minutes only. The momentum takes over after starting.</li>
+  <li>Grayscale mode on phone during study hours — reduces dopamine pull.</li>
+  <li>No passive revision counts as study: rereading notes, highlighting, watching explainer videos for hours — these do not build exam performance. Questions only.</li>
+  <li>Sunday 7pm planning session: write out the whole next week. Prevents decision fatigue causing drift on weekday evenings.</li>
+</ul>
+</div></div>
+
+<div class="section-title">Assessment sprint schedule</div>
+<div class="day-card"><div class="day-body" style="display:block">
+<ul class="method-list">
+  <li>Weeks 5–7: build consistency, fix Extension 1 foundation, fix sleep, start error log</li>
+  <li>Weeks 8–9: assessment preparation mode — shift to past papers and timed simulation for the subjects with tasks</li>
+  <li>Term 2 holidays: intensive catch-up block. 2 full past papers per week per science. Heavy Ext 1 consolidation. This is where rankings shift.</li>
+  <li>Term 3 Week 1: assessment tasks — arrive having done the holiday work</li>
+  <li>Term 3 Weeks 4–5 (trials): full paper stamina, exam execution, sleep locked in</li>
+</ul>
+</div></div>
+</div><!-- /tab-targets -->
+
+</main>
+
+<footer class="site-footer">
+  HSC Year 12 Study Timetable
+</footer>
+
+<script>
+function toggle(header) {
+  const body = header.nextElementSibling;
+  const chev = header.querySelector('.chevron');
+  const open = body.classList.toggle('open');
+  chev.classList.toggle('open', open);
+  header.classList.toggle('open', open);
+}
+
+function switchTab(id, el) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('tab-' + id).classList.add('active');
+}
+</script>
+
+</body>
+</html>
